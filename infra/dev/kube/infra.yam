@@ -1,0 +1,79 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: bian-infra
+spec:
+  containers:
+    # --- Kafka (KRaft mode) ---
+    - name: kafka
+      image: apache/kafka:3.7.0
+      env:
+        - name: KAFKA_NODE_ID
+          value: "1"
+        - name: KAFKA_PROCESS_ROLES
+          value: "broker,controller"
+        - name: KAFKA_CONTROLLER_QUORUM_VOTERS
+          value: "1@localhost:9093"
+        - name: KAFKA_LISTENERS
+          value: "PLAINTEXT://:9092,CONTROLLER://:9093"
+        - name: KAFKA_ADVERTISED_LISTENERS
+          value: "PLAINTEXT://localhost:9092"
+        - name: KAFKA_CONTROLLER_LISTENER_NAMES
+          value: "CONTROLLER"
+        - name: KAFKA_LOG_DIRS
+          value: "/tmp/kraft-combined-logs"
+      ports:
+        - containerPort: 9092
+          hostPort: 9092
+
+    # --- Kafdrop (Kafka UI) ---
+    - name: kafdrop
+      image: docker.io/obsidiandynamics/kafdrop:latest
+      env:
+        - name: KAFKA_BROKERCONNECT
+          value: "localhost:9092"
+      ports:
+        - containerPort: 9000
+          hostPort: 9000
+
+    # --- Postgres: payment-initiation ---
+    - name: pg-payment-init
+      image: docker.io/postgres:16
+      env:
+        - name: POSTGRES_DB
+          value: "payment_initiation"
+        - name: POSTGRES_USER
+          value: "payment_init"
+        - name: POSTGRES_PASSWORD
+          value: "payment_init_pw"
+      ports:
+        - containerPort: 5432
+          hostPort: 54321
+
+    # --- Postgres: payment-execution ---
+    - name: pg-payment-exec
+      image: docker.io/postgres:16
+      env:
+        - name: POSTGRES_DB
+          value: "payment_execution"
+        - name: POSTGRES_USER
+          value: "payment_exec"
+        - name: POSTGRES_PASSWORD
+          value: "payment_exec_pw"
+      ports:
+        - containerPort: 5432
+          hostPort: 54322
+
+    # --- Postgres: current-account ---
+    - name: pg-current-account
+      image: docker.io/postgres:16
+      env:
+        - name: POSTGRES_DB
+          value: "current_account"
+        - name: POSTGRES_USER
+          value: "current_account"
+        - name: POSTGRES_PASSWORD
+          value: "current_account_pw"
+      ports:
+        - containerPort: 5432
+          hostPort: 54323
