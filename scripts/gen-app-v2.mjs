@@ -135,6 +135,7 @@ async function installDeps(serviceName) {
   // Install only what the app needs (scoped), not workspace root - keeps ownership clear.
   run('pnpm', ['--filter', serviceName, 'add', '@nestjs/config', 'class-validator', 'class-transformer']);
   run('pnpm', ['--filter', serviceName, 'add', '@prisma/client']);
+  run('pnpm', ['--filter', serviceName, 'add', 'decimal.js']);
 }
 
 async function createBaselineFiles(appFolder, templateFolder, templateVars) {
