@@ -1,3 +1,13 @@
+####
+#### USER GITIGNORE
+####
+prisma/schema.*.prisma
+.idea
+
+####
+#### GENERATED GITIGNORE FILE
+####
+
 # Created by https://www.toptal.com/developers/gitignore/api/node,linux,macos,windows,webstorm+all,visualstudiocode
 # Edit at https://www.toptal.com/developers/gitignore?templates=node,linux,macos,windows,webstorm+all,visualstudiocode
 
@@ -323,3 +333,4 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/node,linux,macos,windows,webstorm+all,visualstudiocode
+/generated/prisma
