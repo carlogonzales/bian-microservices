@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "target": "ES2023",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+
+    "baseUrl": ".",
+
+    "paths": {
+      "@libs/contracts/*": ["./libs/contracts/*"],
+      "@libs/common/*": ["./libs/common/*"],
+      "@libs/config/*": ["./libs/config/*"],
+      "@libs/platform-config/*": ["./libs/config/*"]
+    }
+  },
+}

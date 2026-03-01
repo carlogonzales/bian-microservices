@@ -2,7 +2,6 @@ import {ConfigNamespace, PlainObject} from "./types";
 import Joi from "joi";
 import {DynamicModule, Logger, Module, Provider, ValueProvider} from "@nestjs/common";
 import {getSource, initSourceCache} from "./source-cache";
-import {GLOBAL_CONFIG, globalConfigNamespace} from "../config/global.config-namespace";
 
 const logger: Logger = new Logger('PlatformConfigModule', {timestamp: true});
 
@@ -23,15 +22,6 @@ export class PlatformConfigModule {
 
         const effectiveByKey: PlainObject = {};
         const providers: Provider[] = [];
-
-        // By default always add global namespace
-        if (!options.namespaces.some(ns => ns.key === 'global')) {
-            logger.verbose('Adding default global config namespace');
-            providers.push({
-                provide: GLOBAL_CONFIG,
-                useValue: globalConfigNamespace.factory(src, process.env),
-            })
-        }
 
         // Process each namespace
         for (const ns of options.namespaces) {

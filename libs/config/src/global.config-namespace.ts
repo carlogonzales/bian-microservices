@@ -1,4 +1,4 @@
-import {ConfigNamespace} from "../platform-config/types";
+import {ConfigNamespace} from "@libs/platform-config/types";
 import Joi from "joi";
 
 
