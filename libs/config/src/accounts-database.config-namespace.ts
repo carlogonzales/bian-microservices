@@ -1,4 +1,4 @@
-import {CommonDBPoolConfig, DBWithSchemaConfig, PlainObject} from "@libs/platform-config/types";
+import {CommonDBPoolConfig, ConfigNamespace, DBWithSchemaConfig, PlainObject} from "@libs/platform-config/types";
 import Joi from "joi";
 
 
@@ -6,10 +6,10 @@ export const ACCOUNTS_DATABASE_CONFIG: symbol = Symbol.for('ACCOUNTS_DATABASE') 
 
 export interface AccountsDatabaseConfig extends DBWithSchemaConfig, CommonDBPoolConfig {}
 
-export const accountsDatabaseConfigNamespace = {
+export const accountsDatabaseConfigNamespace: ConfigNamespace<AccountsDatabaseConfig> = {
     key: 'accountsDb',
     token: ACCOUNTS_DATABASE_CONFIG,
-    factory: (srcConfig: PlainObject, env: any): PlainObject => {
+    factory: (srcConfig, env): AccountsDatabaseConfig => {
         return {
             hostname: srcConfig.accountsDb.hostname || env.ACCOUNTS_DB_HOSTNAME,
             port: srcConfig.accountsDb.port || env.ACCOUNTS_DB_PORT || 5432,
