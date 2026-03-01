@@ -26,7 +26,7 @@ export const accountsDatabaseConfigNamespace: ConfigNamespace<AccountsDatabaseCo
 
         }
     },
-    validateSchema: Joi.object<AccountsDatabaseConfig>({
+    validationSchema: Joi.object<AccountsDatabaseConfig>({
         hostname: Joi.string().required(),
         port: Joi.number().default(5432),
         username: Joi.string().required(),
