@@ -1,4 +1,4 @@
-import {ConfigNamespace} from "@libs/platform-config/types";
+import {ConfigNamespace} from "@libs/platform-config";
 import Joi from "joi";
 
 
@@ -22,7 +22,15 @@ export const globalConfigNamespace: ConfigNamespace<GlobalConfig> = {
         };
     },
     validationSchema: Joi.object<GlobalConfig>({
-        appEnv: Joi.string().valid(...ENVIRONMENTS).required().message(`APP_ENV must be one of ${ENVIRONMENTS.join(', ')}`),
-        nodeEnv: Joi.string().valid(...ENVIRONMENTS).required().message(`NODE_ENV must be one of ${ENVIRONMENTS.join(', ')}`),
+        appEnv: Joi.string().valid(...ENVIRONMENTS).required().messages({
+            'any.required': 'APP_ENV is required',
+            'string.base': 'APP_ENV must be a string',
+            'any.only': `APP_ENV must be one of ${ENVIRONMENTS.join(', ')}`,
+        }),
+        nodeEnv: Joi.string().valid(...ENVIRONMENTS).required().messages({
+            'any.required': 'NODE_ENV is required',
+            'string.base': 'NODE_ENV must be a string',
+            'any.only': `NODE_ENV must be one of ${ENVIRONMENTS.join(', ')}`,
+        }),
     }).required(),
 }
