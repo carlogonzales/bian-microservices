@@ -6,9 +6,28 @@ import { {{serviceNamePascal}}Module } from "./{{serviceNameKebab}}/{{serviceNam
 
 @Module({
   imports: [
-    PrismaModule,
-    HealthModule,
     {{serviceNamePascal}}Module,
+    HealthModule,
+    PrismaModule,
+    ConfigModule.forRoot({ isGlobal: true }),
+    PlatformConfigModule.forRoot({
+      namespaces: [bianMsDatabaseConfigNamespace],
+    }),
+    LoggerModule.forRoot({
+      pinoHttp: {
+        level: process.env.NODE_ENV === 'prod' ? 'info' : 'debug',
+        redact: ['req.headers.authorization'], // redact sensitive data
+        ...({
+          transport:
+            process.env.NODE_ENV === 'prod'
+              ? undefined
+              : {
+                  target: 'pino-pretty',
+                  options: { singleLine: true },
+                },
+        } as LoggerOptions),
+      },
+    }),
   ],
 })
 export class AppModule {}
