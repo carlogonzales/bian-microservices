@@ -1,0 +1,17 @@
+{
+  "name": "@libs/prisma-tx",
+  "version": "1.0.0",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "pnpm run clean && tsc -b",
+    "clean": "rimraf --glob dist *.tsbuildinfo"
+  }
+}
