@@ -1,4 +1,5 @@
 import { v4 as uuidv4, v5 as uuidv5 } from 'uuid';
+import { AsyncLocalStorage } from 'node:async_hooks';
 
 const INTERNAL_NAMESPACE_UUID: string = '8194cb10-9e06-495d-ad45-b617a263bbf0';
 const DEFAULT_NAMESPACE: string = 'bian-microservice'; // predefined namespace
@@ -12,6 +13,8 @@ type GenericUUID = `${string}-${string}-${string}-${string}-${string}`;
 type UUIDv4or5 =
   `${string}-${string}-4${string}-${string}-${string}` |
   `${string}-${string}-5${string}-${string}-${string}`;
+
+type CorrelationUUID = `corr_${string}-${string}-${string}-${string}-${string}` | string;
 
 type DeterministicCorrelation = {
   namespace: string;
@@ -32,6 +35,41 @@ type CorrelationsOpts = {
   correlationId?: UUIDv4or5;
 } & (DeterministicCorrelation | DefaultNamepsaceContextCorrelation | NoCorrelationInput);
 
+type CorrelationData = {
+  correlationId: CorrelationUUID;
+};
+
+const correlationStore = new AsyncLocalStorage<CorrelationData>();
+
+/**
+ * Run the given function with the given correlation ID.
+ *
+ * @param correlationId
+ * @param fn
+ */
+export function runWithCorrelationId<T>(correlationId: string, fn: () => T): T {
+  return correlationStore.run({ correlationId }, fn);
+}
+
+export function getCorrelationId(): CorrelationUUID | undefined {
+  return correlationStore.getStore()?.correlationId;
+}
+
+export function ensureCorrelationId(correlationId?: string): CorrelationUUID {
+  if (correlationId && correlationId.length > 0) {
+    return correlationId as CorrelationUUID;
+  }
+  return `corr_${uuidv4()}` as CorrelationUUID;
+}
+
+/**
+ * For the given context, generate a deterministic UUIDv5.
+ *
+ * RESERVED: For datastore use only
+ * @param correlationId
+ * @param context
+ * @param namespace
+ */
 export function getOrCreateCorrelationId({
                                            correlationId,
                                            context,
